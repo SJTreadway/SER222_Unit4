@@ -1,13 +1,15 @@
+package core;
 /**
  * This program provides an implementation of the Deque interface
  * and demonstrates it.
  * 
  * @author Steven Treadway, Acuna
  * @version 1.0
+ * Date: 04/02/2018
+ * Time: 3.5 hours
  */
 import java.util.NoSuchElementException;
     
-//TODO: implement.
 public class BaseDeque<Item> implements Deque<Item> {
 	
 	private int size;
@@ -30,14 +32,15 @@ public class BaseDeque<Item> implements Deque<Item> {
     	
     	Node newFirst = new Node();
         newFirst.item = element;
+        
+        if (last == null) 
+        	last = newFirst;
 
         if (first != null) {
             newFirst.next = first;
             first.previous = newFirst;
         }
         first = newFirst;
-        if (last == null) 
-        	last = first;
 
         size++;
     }
@@ -51,6 +54,9 @@ public class BaseDeque<Item> implements Deque<Item> {
     	
     	Node newLast = new Node();
         newLast.item = element;
+        
+        if (first == null)
+        	first = newLast;
 
         if (last != null) {
             newLast.previous = last;
@@ -58,9 +64,6 @@ public class BaseDeque<Item> implements Deque<Item> {
         }
         
         last = newLast;
-        
-        if (first == null)
-        	first = last;
         
         size++;
     }
@@ -136,6 +139,18 @@ public class BaseDeque<Item> implements Deque<Item> {
      */
     public boolean contains(Item element) {
     	throwNullException(element);
+    	Node node = new Node();
+    	node = first;
+    	
+    	if (first.item == element || last.item == element)
+    		return true;
+    	
+    	while (node.next != null) {
+    		if (node.item == element)
+    			return true;
+    		node = node.next;
+    	};
+    	
     	return false;
     }
    
@@ -163,17 +178,32 @@ public class BaseDeque<Item> implements Deque<Item> {
      */
     @Override
     public String toString() {
-    	return "";
+    	String str = "";
+    	Node node = new Node();
+    	node = last;
+    	
+    	if (size == 0)
+    		return "empty";
+    	
+    	while (node != null) {
+    		if (node == first)
+    			str = str + node.item; // don't want trailing space
+    		else
+    			str = str + node.item + " ";
+    		node = node.previous;
+    	}
+    	
+    	return str;
     }
     
     private void throwNullException(Item element) {
     	if (element == null)
-    		throw new NullPointerException();
+    		throw new NullPointerException("Element parameter required.");
     }
     
-    private void throwNoElementException()) {
+    private void throwNoElementException() {
         if (first == null)
-            throw new NoSuchElementException();
+            throw new NoSuchElementException("Queue is empty.");
     }
 
 
@@ -208,6 +238,6 @@ public class BaseDeque<Item> implements Deque<Item> {
         deque.dequeueFront();        
         System.out.println(deque.first());        
         System.out.println("size: " + deque.size());
-        System.out.println("contents:\n" + deque.toString());            
+        System.out.println("contents:\n" + deque.toString());
     }
 } 
